@@ -1,4 +1,4 @@
-FROM jrottenberg/ffmpeg:4.4-ubuntu2004
-RUN apt-get update && apt-get install -y python3
-ENTRYPOINT []
-CMD ["sh","-c","python3 -m http.server 7860 & exec ffmpeg -re -i https://l1b1-lourdes-france.com/ingest/cam_grotte/playlist.m3u8 -c:v libx264 -preset veryfast -b:v 2000k -c:a aac -f flv rtmp://a.rtmp.youtube.com/live2/$bgrd-dahh-eepr-esk7-80tb"]
+FROM alpine:latest
+RUN apk add --no-cache ffmpeg
+ENV YT_RTMP=rtmp://a.rtmp.youtube.com/live2
+CMD ["sh","-c","ffmpeg -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 15 -i https://l1b1-lourdes-france.com/ingest/cam_grotte/playlist.m3u8 -c:v copy -c:a aac -b:a 128k -f flv $YT_RTMP/$bgrd-dahh-eepr-esk7-80tb]
